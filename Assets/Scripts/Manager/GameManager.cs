@@ -2,16 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoSingleton<GameManager>
 {
-    // Start is called before the first frame update
-    void Start()
+    // 전투에 대해 관리해주는 클래스
+
+    private int Stage = 0; // 현재 스테이지 번호 
+
+    private GameObject Player = null;
+    private List<GameObject> Enemy = null;
+
+    // 시작, 초기화를 해주는 부분
+    private void Init()
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Clear()
     {
         
     }

@@ -24,6 +24,11 @@ public class SystemManager : MonoSingleton<SystemManager>
 
     }
 
+    private void Clear()
+    {
+
+    }
+
     public void SetState(EGAME_STATE state)
     {
         GameState = state;
@@ -47,7 +52,7 @@ public class SystemManager : MonoSingleton<SystemManager>
                 break;
             case EGAME_STATE.GAME:
                 {
-                    SceneManager.LoadScene("Game");
+                    StartCoroutine(LoadSceneAsyncCor("Game"));
                 }
                 break;
             case EGAME_STATE.END:
@@ -56,5 +61,25 @@ public class SystemManager : MonoSingleton<SystemManager>
                 }
                 break;
         }
+    }
+
+    // 비동기 씬 로드 코루틴
+    IEnumerator LoadSceneAsyncCor(string sceneName)
+    {
+        AsyncOperation handle = SceneManager.LoadSceneAsync(sceneName);
+
+        handle.allowSceneActivation = false;
+
+        while (handle.progress < 0.9) 
+        {
+            Debug.Log(handle.progress);
+            yield return null;
+        }
+
+        // 로딩바
+        float progress = handle.progress + 0.1f;
+        Debug.Log(handle.progress);
+
+        handle.allowSceneActivation = true;
     }
 }

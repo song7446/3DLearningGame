@@ -7,8 +7,8 @@ public class GameManager : MonoSingleton<GameManager>
 {
     private int Stage = 0; // 현재 스테이지 번호 
 
-    private GameObject Player = null;
-    private List<GameObject> Enemy = null;
+    public Charater Player = null;
+    public List<Charater> Enemy = null;
 
     // 시작, 초기화를 해주는 부분
     private void Init()
@@ -46,10 +46,14 @@ public class GameManager : MonoSingleton<GameManager>
         return null;
     }
 
-    // 가장 가까이 있는 적군 얻기 위한 함수 
-    public GameObject GetClosestEnemy(float dist) // dist 여러 상황에 검사하는 거리 조건 기준값
+    /// <summary>
+    /// 가장 가까이 있는 적군 얻기 위한 함수 
+    /// </summary>
+    /// <param name="dist">탐지 범위 값</param>
+    /// <returns></returns>
+    public Charater GetClosestEnemy(float dist) // dist 여러 상황에 검사하는 거리 조건 기준값
     {
-        GameObject closestEnemy = null;
+        Charater closestEnemy = null;
         float tempDist = 0f;
         var playerPosition = Player.transform.position;
         Enemy.ForEach(enemy =>
@@ -65,9 +69,9 @@ public class GameManager : MonoSingleton<GameManager>
         return closestEnemy;
     }
 
-    public GameObject GetPlayer()
+    public Charater GetPlayer()
     {
-        return null;
+        return Player;
     }
 
     public void EnemyDie()

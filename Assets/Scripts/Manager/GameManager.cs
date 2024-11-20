@@ -7,15 +7,12 @@ public class GameManager : MonoSingleton<GameManager>
 {
     private int Stage = 0; // 현재 스테이지 번호 
 
-    public Stage TestOrigin = null;
-
     public Charater Player = null;
     public List<Charater> Enemy = null;
 
     [ContextMenu("TEST")]
     public void Test()
     {
-        StageManager.Instance.TestOrigin = TestOrigin;
         StageManager.Instance.CreateStage();
     }
 

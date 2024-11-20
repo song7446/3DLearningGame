@@ -23,9 +23,6 @@ public class Tile
 
 public class Stage : MonoBehaviour
 {
-    public GameObject TileOrigin = null;
-
-
     // 하나의 큰 스테이지가 있고 임의로 정한 크키로 구획을 나눈다 
     // 하나의 구획이 타일 
     // 타일에 속성값 부여함으로써 일반적으로 통로 길 함정 갈 수 없는길 
@@ -41,24 +38,80 @@ public class Stage : MonoBehaviour
         Width = width;
         Height = height;
 
+        int wLastIdx = Width - 1;
+        int hLastIdx = Height - 1;
+
+        int createWallCount = 0;
+        float widthWallPos = 0f;
+        float heightWallPos = 0f;
+
         TileList = new List<Tile>();
 
-        GameObject tmpGameObject = null;
+        MonoObjectPool<Transform> tilePool = StageManager.Instance.TilePool;
+        MonoObjectPool<Transform> wallPool = StageManager.Instance.WallPool;
+
+        Vector3 stagePos = transform.position;
+
+        Transform tmpTransform = null;
         Tile tempTile = null;
 
         for (int i = 0; i < Width; i++)
         {
             for (int j = 0; j < Height; j++)
             {
-                tmpGameObject = Instantiate<GameObject>(TileOrigin, transform);
-                tmpGameObject.SetActive(true);
+                createWallCount = 0;
+                widthWallPos = 0f;
+                heightWallPos = 0f;
+
+                if (i == 0)
+                {
+                    ++createWallCount;
+                    widthWallPos = -1f;
+                }
+                else if (i == wLastIdx)
+                {
+                    ++createWallCount;
+                    widthWallPos = 1f;
+                }
+
+                if (j == 0)
+                {
+                    createWallCount += createWallCount > 0 ? 2 : 1;
+                    heightWallPos = -1f;
+                }
+                else if (j == hLastIdx)
+                {
+                    createWallCount += createWallCount > 0 ? 2 : 1;
+                    heightWallPos = 1f;
+                }
+
+                if (createWallCount > 0)
+                {
+                    if (createWallCount > 1)
+                    {
+                        tmpTransform = wallPool.Get(); //Instantiate<GameObject>(WallOrigin, transform);                       
+                        tmpTransform.transform.position = stagePos + new Vector3(i, 0f, j + heightWallPos);
+                        tmpTransform.gameObject.SetActive(true);
+
+                        tmpTransform = wallPool.Get(); //Instantiate<GameObject>(WallOrigin, transform);
+                        tmpTransform.transform.position = stagePos + new Vector3(i + widthWallPos, 0f, j);
+                        tmpTransform.gameObject.SetActive(true);
+                    }
+
+                    tmpTransform = wallPool.Get(); //Instantiate<GameObject>(WallOrigin, transform);
+                    tmpTransform.transform.position = stagePos + new Vector3(i + widthWallPos, 0f, j + heightWallPos);
+                    tmpTransform.gameObject.SetActive(true);
+
+                }
+                tmpTransform = tilePool.Get(); //Instantiate<GameObject>(TileOrigin, transform);
 
                 tempTile = new Tile();
-                tempTile.TileGameObject = tmpGameObject;
-
+                tempTile.TileGameObject = tmpTransform.gameObject;
                 tempTile.E_Type = ETILE_TYPE.NOMAL;
                 tempTile.Pos = new Vector3(i, 0f, j);
-                tmpGameObject.transform.position = tempTile.Pos;
+
+                tmpTransform.transform.localPosition = stagePos + tempTile.Pos;
+                tmpTransform.gameObject.SetActive(true);
 
                 TileList.Add(tempTile);
             }

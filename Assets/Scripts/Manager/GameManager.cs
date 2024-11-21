@@ -16,10 +16,15 @@ public class GameManager : MonoSingleton<GameManager>
         StageManager.Instance.CreateStage();
     }
 
+    private void Start()
+    {
+        Init();
+    }
+
     // 시작, 초기화를 해주는 부분
     private void Init()
     {
-
+        Player.Init();
     }
 
     public void Clear()

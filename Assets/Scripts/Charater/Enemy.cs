@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Enemy : Charater
 {
+
+
     private void Start()
     {
         Init();

@@ -27,8 +27,9 @@ public class InputControl : MonoBehaviour
             if (instance != this) 
             {
                 Debug.LogError("Input Control is not Only : " + instance.gameObject.name);
-            }
+            }           
         }
+        instance = this;
     }
 
     void Update()

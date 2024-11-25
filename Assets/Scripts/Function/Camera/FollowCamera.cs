@@ -6,6 +6,8 @@ public class FollowCamera : MonoBehaviour
 {
     public Transform Target = null;
 
+    public bool InvertY = false;
+
     public float ArcSpeed = 1f;
     public float MoveSpeed = 1f;
     public float Distance = 4f;
@@ -17,7 +19,6 @@ public class FollowCamera : MonoBehaviour
     // 그렇기 때문에 lateupdate로 제일 나중에 카메라를 연산 
     private void LateUpdate()
     {
-        Target.position += Vector3.forward * Time.deltaTime;
         CalPosition();
         CalLookAt();
     }
@@ -26,15 +27,12 @@ public class FollowCamera : MonoBehaviour
     {
         var targetPos = Target.position;
 
-        Vector2 mouseValue = Vector2.zero;
-        mouseValue.Set(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")); // -1 ~ 1 값
+        Vector2 mouseValue = InputControl.Instance.MouseInput;
         mouseValue *= ArcSpeed;
-
-
         ElapsedVec.x += mouseValue.x;
-        ElapsedVec.y = Mathf.Clamp(ElapsedVec.y - mouseValue.y, 0.2f, 1.9f);
+        ElapsedVec.y = Mathf.Clamp(ElapsedVec.y + (mouseValue.y * (InvertY ? 1f : -1f)), 0.2f, 1.9f);
 
-        transform.position = targetPos + (new Vector3(Mathf.Cos(ElapsedVec.x) * Mathf.Cos(ElapsedVec.y), Mathf.Cos(ElapsedVec.y), Mathf.Sin(ElapsedVec.x) * Mathf.Cos(ElapsedVec.y)) * Distance);
+        transform.position = targetPos + (new Vector3(Mathf.Cos(ElapsedVec.x) * Mathf.Sin(ElapsedVec.y), Mathf.Cos(ElapsedVec.y), Mathf.Sin(ElapsedVec.x) * Mathf.Sin(ElapsedVec.y)) * Distance);
 
         //ElapsedVec += Time.deltaTime * Vector3.one;
         // x,y 기준으로 회전
